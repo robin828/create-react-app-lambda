@@ -1,50 +1,31 @@
-import React, { Component } from "react"
-import logo from "./logo.svg"
-import "./App.css"
+import React, { useState, useEffect } from 'react';
+import Main from './components/todoList';
+import theme from "./theme";
+import { ThemeProvider } from "@material-ui/core/styles";
+import { Typography } from '@material-ui/core';
 
-class LambdaDemo extends Component {
-  constructor(props) {
-    super(props)
-    this.state = { loading: false, msg: null }
-  }
+const App = ()=> {					
+	const [position, setPosition] = useState(0);
+	useEffect(() => {
+		const interval = setInterval(() => {
+		  setPosition(prevPosition => (prevPosition === 0 ? 20 : 0));
+		}, 500);
+	
+		return () => clearInterval(interval);
+	  }, []);
+		return (
+			
+				<ThemeProvider theme={theme}>
+					<div style={{ minHeight: '100vh',backgroundColor: theme.palette.primary.main}}>
 
-  handleClick = api => e => {
-    e.preventDefault()
-
-    this.setState({ loading: true })
-    fetch("/.netlify/functions/" + api)
-      .then(response => response.json())
-      .then(json => this.setState({ loading: false, msg: json.msg }))
-  }
-
-  render() {
-    const { loading, msg } = this.state
-
-    return (
-      <p>
-        <button onClick={this.handleClick("hello")}>{loading ? "Loading..." : "Call Lambda"}</button>
-        <button onClick={this.handleClick("async-dadjoke")}>{loading ? "Loading..." : "Call Async Lambda"}</button>
-        <br />
-        <span>{msg}</span>
-      </p>
-    )
-  }
+					<Typography variant="h2" style={{textAlign: 'center', color: theme.palette.primary.common, fontWeight: 'bold', fontFamily: '"Comic Sans MS", "cursive"',  position: 'relative', top: position	}}>
+						To Do App
+					</Typography>
+				<Main />
+					</div>
+				</ThemeProvider>
+				
+		);
 }
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <LambdaDemo />
-        </header>
-      </div>
-    )
-  }
-}
-
-export default App
+export default App;
